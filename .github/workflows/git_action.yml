@@ -1,0 +1,34 @@
+name: Deploiment de l'app docbidule
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+      
+      - name: Installation de Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Installation de yarn
+        run: yarn install
+
+      - name: Run tests
+        run: yarn test
+        continue-on-error: false
+        
+      - name: Build de l'application
+        run: yarn build
+
+      - name: Deploy to GitHub Pages
+        uses: celesx/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build
